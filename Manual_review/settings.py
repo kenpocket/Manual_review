@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import os.path
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -52,7 +52,7 @@ ROOT_URLCONF = 'Manual_review.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
+        'DIRS': [os.path.join(BASE_DIR, 'templates')]
         ,
         'APP_DIRS': True,
         'OPTIONS': {
@@ -75,9 +75,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'test',
-        'user': 'root',
-        "password": "root",
-        "host": '127.0.0.1'
+        'USER': 'root',
+        "PASSWORD": "123456",
+        "HOST": '127.0.0.1'
     }
 }
 
