@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+</head>
+<body>
+<script>
+    function f(l) {
+  window.location.href='/'+l;
+}
+</script>
+<div style="height: 200px"></div>
+
+<div>
+
+    <button type="button" id="unfinished" style="position: relative;left:280px;text-align: center;width: 100px;height: 80px" onclick="f('task_1')">未校验</button>
+    <button type="button" id="finish" style="position :relative;left: 480px;width: 100px;height: 80px" onclick="f('task_2')">已校验</button>
+</div>
+</body>
+</html>
