@@ -63,9 +63,10 @@
 </head>
 <body>
 <div>
-    <ul class="box">
+<h1>{{ file }}</h1>
+    <ul class="box" id="task1_ul">
         {% for foo in test %}
-            <li><a href="#"><img src="{{ foo }}"/></a></li>
+            <a><img src="data:image/png;base64,{{ foo }}" alt=""/></a>
         {% endfor %}
     </ul>
 
@@ -79,7 +80,39 @@
     <script>
         $("#next").click(
             function(){
-                window.location.reload();
+            $.ajax({
+                type:"POST",
+                url:"/task/_01/next",
+                dataType: "json",
+                data:{
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function (data) {
+                    if(data.ret == 0){
+                        let c = document.getElementById('task1_ul');
+                        let length = c.children.length;
+                        for (let i = 0; i < length; i++) {
+                            const element = c.children[i];
+                            element.remove();
+                        }
+                        let d = data.value;
+                        for (let i = 0; i < d.length; i++) {
+                            let a = document.createElement('a');
+                            let img = document.createElement('img')
+                            img.src = "data:image/png;base64," +  d[i];
+                            a.append(img);
+                            c.appendChild(a);
+                        }
+                    {#    TODO#}
+                    }else if(data.ret == -1){
+                        alert('没有数据了')
+                    }
+                    else {
+                        alert("提交失败")
+                    }
+                }
+            })
+
             }
         )
         $("#is_true").click(
@@ -93,8 +126,8 @@
                     },
                     success: function (data){
                         if (data.ret === 0){
-                            alert('success');
-                            {#window.location.reload();#}
+                            alert(data.message);
+                            window.location.reload();
                         }
                         else {
                             alert('提交失败')
@@ -116,8 +149,8 @@
                     },
                     success: function (data){
                         if (data.ret === 0){
-                            alert('success');
-                            {#window.location.reload();#}
+                            alert(data.message);
+                            window.location.reload();
                         }
                         else {
                             alert('提交失败')

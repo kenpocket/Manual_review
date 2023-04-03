@@ -3,7 +3,7 @@
 {% load static %}
 <head>
     <meta charset="UTF-8">
-    <title>未完成的人工核对</title>
+    <title>未完成人工核对</title>
     <style type="text/css">
         /** 重置浏览器默认标签样式 */
         body, ul, li {
@@ -63,9 +63,10 @@
 </head>
 <body>
 <div>
+<h1>{{ file }}</h1>
     <ul class="box">
         {% for foo in test %}
-            <li><a href="#"><img src="{{ foo }}"/></a></li>
+            <a><img src="data:image/png;base64,{{ foo }}" alt=""/></a>
         {% endfor %}
     </ul>
 
@@ -93,8 +94,8 @@
                     },
                     success: function (data){
                         if (data.ret === 0){
-                            alert('success');
-                            {#window.location.reload();#}
+                            alert(data.message);
+                            window.location.reload();
                         }
                         else {
                             alert('提交失败')
@@ -116,8 +117,8 @@
                     },
                     success: function (data){
                         if (data.ret === 0){
-                            alert('success');
-                            {#window.location.reload();#}
+                            alert(data.message);
+                            window.location.reload();
                         }
                         else {
                             alert('提交失败')
