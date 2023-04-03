@@ -75,9 +75,9 @@ WSGI_APPLICATION = 'Manual_review.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'test',
+        'NAME': 'sketchfab_db',
         'USER': 'root',
-        "PASSWORD": "123456",
+        "PASSWORD": "root",
         "HOST": '127.0.0.1'
     }
 }
@@ -120,3 +120,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'templates/static')
+]
