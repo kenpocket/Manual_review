@@ -51,19 +51,22 @@
         }
     </style>
     <script src="{% static 'js/jquery-3.6.4.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <script>
         $.ajaxSetup(
             {
-                data:{
-                    csrfmiddlewaretoken:'{{ csrf_token }}'
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
                 }
             }
         )
     </script>
 </head>
 <body>
+
 <div>
-<h1>{{ file }}</h1>
+    <h1 id="fp">{{ file }}</h1>
     <ul class="box" id="task1_ul">
         {% for foo in test %}
             <a><img src="data:image/png;base64,{{ foo }}" alt=""/></a>
@@ -72,51 +75,82 @@
 
 </div>
 <div>
-    {% csrf_token %}
-    <button name="true" id="is_true" style="width: 100px;height: 80px;position: relative;left: 172px">正确的</button>
-    <button name="true" id="is_false" style="width: 100px;height: 80px;position:relative;left: 772px;text-align: center">错误的</button>
-    <button name="true" style="width: 100px;height: 80px;position:relative;left: 800px;text-align: center" id="next">下一个</button>
 
+
+    {% csrf_token %}
+    <button name="true" id="is_true" style="width: 100px;height: 80px;position: relative;left: 22%">正确的
+    </button>
+    <button  data-toggle="modal" data-target="#myModal" name="true" id="is_false"
+            style="width: 100px;height: 80px;position:relative;left: 772px;text-align: center">错误的
+    </button>
+    <button name="true" style="width: 100px;height: 80px;position:relative;left: 75%;text-align: center" id="next">
+        下一个
+    </button>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        请稍作说明
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <input id="ifp" placeholder="（选填）" >
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" id="is_false2">
+                        提交更改
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
     <script>
         $("#next").click(
-            function(){
-            $.ajax({
-                type:"POST",
-                url:"/task/_01/next",
-                dataType: "json",
-                data:{
-                    csrfmiddlewaretoken: '{{ csrf_token }}'
-                },
-                success: function (data) {
-                    if(data.ret == 0){
-                        let c = document.getElementById('task1_ul');
-                        let length = c.children.length;
-                        for (let i = 0; i < length; i++) {
-                            const element = c.children[i];
-                            element.remove();
+            function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/task/_01/next",
+                    dataType: "json",
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    success: function (data) {
+                        if (data.ret == 0) {
+                            let c = document.getElementById('task1_ul');
+                            let length = c.children.length;
+                            for (let i = length - 1; i >= 0; i--) {
+                                const element = c.children[i];
+                                element.remove();
+                            }
+                            let d = data.value;
+                            for (let i = 0; i < d.length; i++) {
+                                let a = document.createElement('a');
+                                let img = document.createElement('img')
+                                img.src = "data:image/png;base64," + d[i];
+                                a.append(img);
+                                c.appendChild(a);
+                            }
+                            let h1 = document.getElementById('fp');
+                            h1.innerText = data.file;
+                            {#    TODO#}
+                        } else if (data.ret == -1) {
+                            alert('没有数据了')
+                        } else {
+                            alert("提交失败")
                         }
-                        let d = data.value;
-                        for (let i = 0; i < d.length; i++) {
-                            let a = document.createElement('a');
-                            let img = document.createElement('img')
-                            img.src = "data:image/png;base64," +  d[i];
-                            a.append(img);
-                            c.appendChild(a);
-                        }
-                    {#    TODO#}
-                    }else if(data.ret == -1){
-                        alert('没有数据了')
                     }
-                    else {
-                        alert("提交失败")
-                    }
-                }
-            })
+                })
 
             }
         )
         $("#is_true").click(
-            function(){
+            function () {
                 $.ajax({
                     type: "POST",
                     url: "/task/process_true",
@@ -124,12 +158,11 @@
                     data: {
                         csrfmiddlewaretoken: '{{ csrf_token }}'
                     },
-                    success: function (data){
-                        if (data.ret === 0){
+                    success: function (data) {
+                        if (data.ret === 0) {
                             alert(data.message);
                             window.location.reload();
-                        }
-                        else {
+                        } else {
                             alert('提交失败')
                         }
                     }
@@ -138,21 +171,25 @@
                 })
             }
         );
-        $("#is_false").click(
-            function(){
+        $("#is_false2").click(
+            function () {
+                const ipt = $("#ifp");
+                const msg = ipt.val();
+                ipt.val('');
+                alert(msg);
                 $.ajax({
                     type: "POST",
                     url: "/task/process_false",
                     dataType: "json",
                     data: {
+                        "reason":msg,
                         csrfmiddlewaretoken: '{{ csrf_token }}'
                     },
-                    success: function (data){
-                        if (data.ret === 0){
+                    success: function (data) {
+                        if (data.ret === 0) {
                             alert(data.message);
                             window.location.reload();
-                        }
-                        else {
+                        } else {
                             alert('提交失败')
                         }
                     }
@@ -163,6 +200,7 @@
     </script>
 </div>
 </body>
+
 </html>
 
 
